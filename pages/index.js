@@ -10,7 +10,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Fast Feeback</h1>
+        <h1 className={styles.title}>Fast Feeback - Another deploy</h1>
 
         <p className={styles.description}>
           Get started by editing{' '}
