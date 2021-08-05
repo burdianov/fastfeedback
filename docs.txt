@@ -1,0 +1,6 @@
+# chakra-ui online design tool
+https://openchakra.app/
+
+# create .prettierignore file with the following contents:
+.next
+node_modules
