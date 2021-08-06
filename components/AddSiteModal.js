@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { mutate } from 'swr';
 import {
   Button,
   Modal,
@@ -13,30 +13,63 @@ import {
   FormControl,
   FormLabel,
   Input,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 
 import { createSite } from '../lib/db';
+import { useAuth } from '@/lib/auth';
+import { fetcher } from '@/utils/fetcher';
 
-const AddSiteModal = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const AddSiteModal = ({ children }) => {
   const initialRef = useRef();
+  const toast = useToast();
+  const auth = useAuth();
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { handleSubmit, register, errors } = useForm();
-  const onCreateSite = (values) => createSite(values);
+
+  const onCreateSite = ({ name, url }) => {
+    const newSite = {
+      name,
+      url,
+      authorId: auth.user.uid,
+      createdAt: new Date().toISOString()
+    };
+    createSite(newSite);
+    toast({
+      title: 'Success!',
+      description: "We've added your site.",
+      status: 'success',
+      duration: 5000,
+      isClosable: true
+    });
+    mutate(
+      '/api/sites',
+      async (data) => {
+        return { sites: [...data.sites, newSite] };
+      },
+      false
+    );
+
+    onClose();
+  };
 
   return (
     <>
       <Button
-        fontWeight="medium"
-        variant="solid"
-        size="md"
-        maxW="200px"
         onClick={onOpen}
+        backgroundColor="gray.900"
+        color="white"
+        fontWeight="medium"
+        _hover={{ bg: 'gray.700' }}
+        _active={{
+          bg: 'gray.800',
+          transform: 'scale(0.95)'
+        }}
       >
-        Add Your First Site
+        {children}
       </Button>
-
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onCreateSite)}>
@@ -45,11 +78,7 @@ const AddSiteModal = () => {
           <ModalBody pb={6}>
             <FormControl>
               <FormLabel>Name</FormLabel>
-              <Input
-                placeholder="My site"
-                name="email"
-                {...register('email')}
-              />
+              <Input placeholder="My site" name="name" {...register('name')} />
             </FormControl>
 
             <FormControl mt={4}>

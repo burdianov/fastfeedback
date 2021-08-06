@@ -23,11 +23,11 @@ export default function Home() {
         <LogoIcon color="black" size="64px" />
 
         {auth.user ? (
-          <>
-            <Button onClick={(e) => auth.signout()}>Sign Out</Button>
-          </>
+          <Button as="a" href="/dashboard">
+            View Dashboard
+          </Button>
         ) : (
-          <Button size="sm" mt={4} onClick={(e) => auth.signinWithGithub()}>
+          <Button mt={4} size="sm" onClick={(e) => auth.signinWithGithub()}>
             Sign In
           </Button>
         )}
