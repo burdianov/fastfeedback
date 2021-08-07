@@ -9,7 +9,7 @@ import SiteTable from '@/components/SiteTable';
 
 export default function Dashboard() {
   const auth = useAuth();
-  const { data, error } = useSWR('/api/sites', fetcher);
+  const { data } = useSWR('/api/sites', fetcher);
 
   if (!data) {
     return (
