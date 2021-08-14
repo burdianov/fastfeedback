@@ -5,9 +5,11 @@ import SiteTableSkeleton from '@/components/SiteTableSkeleton';
 import DashboardShell from '@/components/DashboardShell';
 import { fetcher } from '@/utils/fetcher';
 import SiteTable from '@/components/SiteTable';
+import { useAuth } from '@/lib/auth';
 
 export default function Dashboard() {
-  const { data } = useSWR('/api/sites', fetcher);
+  const { user } = useAuth();
+  const { data } = useSWR(user ? ['/api/sites', user.token] : null, fetcher);
 
   if (!data) {
     return (
@@ -19,7 +21,7 @@ export default function Dashboard() {
 
   return (
     <DashboardShell>
-      {data.sites.length ? <SiteTable sites={data.sites} /> : <EmptyState />}
+      {data.sites ? <SiteTable sites={data.sites} /> : <EmptyState />}
     </DashboardShell>
   );
 }
