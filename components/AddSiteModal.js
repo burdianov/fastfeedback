@@ -19,7 +19,6 @@ import {
 
 import { createSite } from '../lib/db';
 import { useAuth } from '@/lib/auth';
-import { fetcher } from '@/utils/fetcher';
 
 const AddSiteModal = ({ children }) => {
   const initialRef = useRef();
@@ -36,7 +35,7 @@ const AddSiteModal = ({ children }) => {
       authorId: auth.user.uid,
       createdAt: new Date().toISOString()
     };
-    createSite(newSite);
+    const id = createSite(newSite);
     toast({
       title: 'Success!',
       description: "We've added your site.",
@@ -47,7 +46,7 @@ const AddSiteModal = ({ children }) => {
     mutate(
       ['/api/sites', auth.user.token],
       async (data) => {
-        return { sites: [...data.sites, newSite] };
+        return { sites: [...data.sites, { id, ...newSite }] };
       },
       false
     );
