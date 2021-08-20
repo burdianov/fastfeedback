@@ -17,11 +17,13 @@ const GlobalStyle = ({ children }) => {
           html {
             min-width: 360px;
             scroll-behavior: smooth;
+            background-color: #edf2f7;
           }
           #__next {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-color: #edf2f7;
           }
         `}
       />
