@@ -26,6 +26,7 @@ export default function SiteFeedback({ initialFeedback }) {
       status: 'pending'
     };
 
+    inputEl.current.value = '';
     setAllFeedback([newFeedback, ...allFeedback]);
     createFeedback(newFeedback);
   };
@@ -38,19 +39,26 @@ export default function SiteFeedback({ initialFeedback }) {
       maxWidth="700px"
       margin="0 auto"
     >
-      <Box as="form" onSubmit={handleSubmit}>
-        <FormControl my={8}>
-          <FormLabel htmlFor="comment">Comment</FormLabel>
-          <Input ref={inputEl} type="text" name="comment" id="comment" />
-          <Button mt={2} type="submit" fontWeight="medium">
-            Add Comment
-          </Button>
-        </FormControl>
-      </Box>
-
-      {allFeedback.map((feedback) => (
-        <Feedback key={feedback.createdAt} {...feedback} />
-      ))}
+      {auth.user && (
+        <Box as="form" onSubmit={handleSubmit}>
+          <FormControl my={8}>
+            <FormLabel htmlFor="comment">Comment</FormLabel>
+            <Input ref={inputEl} id="comment" placeholder="Leave a comment" />
+            <Button
+              mt={4}
+              type="submit"
+              fontWeight="medium"
+              isDisabled={router.isFallback}
+            >
+              Add Comment
+            </Button>
+          </FormControl>
+        </Box>
+      )}
+      {allFeedback &&
+        allFeedback.map((feedback) => (
+          <Feedback key={feedback.id} {...feedback} />
+        ))}
     </Box>
   );
 }
@@ -77,6 +85,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false
+    fallback: true
   };
 }
